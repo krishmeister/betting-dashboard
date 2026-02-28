@@ -5,11 +5,16 @@ import { socket } from '../services/socket';
 import { EconomyService } from '../services/api';
 import LiveBetsTable from './LiveBetsTable';
 
-const GameGridCard = ({ title, category, players, entryFee, hot, onSelect }) => (
+const GameGridCard = ({ title, category, players, entryFee, hot, onSelect, image }) => (
     <div
         onClick={onSelect}
         className="group relative flex-none w-full aspect-[3/4] rounded-xl bg-gradient-to-b from-[#1a2c38] to-[#0f212e] border border-white/5 hover:border-[#1fff20]/30 shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(31,255,32,0.15)] overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5"
     >
+        {/* Game Image (Dynamic) */}
+        {image && (
+            <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700 ease-out" />
+        )}
+
         {/* Game Background with Noise/Gleam */}
         <div className="absolute inset-0 flex flex-col justify-center items-center overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-[#1fff20]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -56,21 +61,21 @@ const GameLobby = () => {
 
     // Platform-relevant game data
     const hotMotionGames = [
-        { id: 1, title: 'Fruit Ninja', category: 'Motion PvP', players: '4,204', entryFee: '50 CR', hot: true },
-        { id: 2, title: 'Whack-a-Mole', category: 'Motion Solo', players: '3,892', entryFee: '100 CR', hot: true },
-        { id: 3, title: 'Beat Dodge', category: 'Motion Rhythm', players: '1,503', entryFee: '25 CR', hot: false },
-        { id: 4, title: 'Goalkeeper VR', category: 'Motion Sports', players: '891', entryFee: '200 CR', hot: false },
-        { id: 5, title: 'Shadow Boxing', category: 'Motion Combat', players: '2,401', entryFee: '150 CR', hot: true },
-        { id: 6, title: 'Dance Royale', category: 'Motion Party', players: '672', entryFee: '50 CR', hot: false },
+        { id: 1, title: 'Fruit Ninja', category: 'Motion PvP', players: '4,204', entryFee: '50 CR', hot: true, image: '/games/fruit-ninja.png' },
+        { id: 2, title: 'Whack-a-Mole', category: 'Motion Solo', players: '3,892', entryFee: '100 CR', hot: true, image: '/games/whack-a-mole.png' },
+        { id: 3, title: 'Beat Dodge', category: 'Motion Rhythm', players: '1,503', entryFee: '25 CR', hot: false, image: '/games/beat-dodge.png' },
+        { id: 4, title: 'Goalkeeper VR', category: 'Motion Sports', players: '891', entryFee: '200 CR', hot: false, image: '/games/goalkeeper-vr.png' },
+        { id: 5, title: 'Shadow Boxing', category: 'Motion Combat', players: '2,401', entryFee: '150 CR', hot: true, image: '/games/shadow-boxing.png' },
+        { id: 6, title: 'Dance Royale', category: 'Motion Party', players: '672', entryFee: '50 CR', hot: false, image: '/games/dance-royale.png' },
     ];
 
     const casinoClassics = [
-        { id: 7, title: 'Elev8 Roulette', category: 'Table Game', players: '9,440', entryFee: '10 CR', hot: true },
-        { id: 8, title: 'Blackjack Pro', category: 'Card Game', players: '6,201', entryFee: '25 CR', hot: true },
-        { id: 9, title: "Texas Hold'em", category: 'Poker', players: '4,100', entryFee: '50 CR', hot: false },
-        { id: 10, title: 'Baccarat Royal', category: 'Card Game', players: '2,802', entryFee: '100 CR', hot: false },
-        { id: 11, title: 'Hi-Lo Cards', category: 'Quick Play', players: '5,320', entryFee: '5 CR', hot: true },
-        { id: 12, title: 'Dice Duel', category: 'Dice', players: '1,990', entryFee: '10 CR', hot: false },
+        { id: 7, title: 'Elev8 Roulette', category: 'Table Game', players: '9,440', entryFee: '10 CR', hot: true, image: '/games/elev8-roulette.png' },
+        { id: 8, title: 'Blackjack Pro', category: 'Card Game', players: '6,201', entryFee: '25 CR', hot: true, image: '/games/blackjack-pro.png' },
+        { id: 9, title: "Texas Hold'em", category: 'Poker', players: '4,100', entryFee: '50 CR', hot: false, image: '/games/texas-holdem.png' },
+        { id: 10, title: 'Baccarat Royal', category: 'Card Game', players: '2,802', entryFee: '100 CR', hot: false, image: '/games/baccarat-royal.png' },
+        { id: 11, title: 'Hi-Lo Cards', category: 'Quick Play', players: '5,320', entryFee: '5 CR', hot: true, image: '/games/hi-lo-cards.png' },
+        { id: 12, title: 'Dice Duel', category: 'Dice', players: '1,990', entryFee: '10 CR', hot: false, image: '/games/dice-duel.png' },
     ];
 
     // Platform stats (simulated — in production these come from API)
@@ -296,6 +301,7 @@ const GameLobby = () => {
                             players={game.players}
                             entryFee={game.entryFee}
                             hot={game.hot}
+                            image={game.image}
                             onSelect={handleFindMatch}
                         />
                     ))}
@@ -320,6 +326,7 @@ const GameLobby = () => {
                             players={game.players}
                             entryFee={game.entryFee}
                             hot={game.hot}
+                            image={game.image}
                             onSelect={handleFindMatch}
                         />
                     ))}
