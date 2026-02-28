@@ -4,9 +4,18 @@ import { useStore } from '../store';
 import { EconomyService } from '../services/api';
 
 const SuperAdminDashboard = () => {
-    const { currentUser, adminNode, logoutAdmin } = useStore();
+    const { currentUser, adminNode, logoutAdmin, activeTheme, setNodeTheme } = useStore();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('command');
+
+    // Available Themes Setup
+    const THEMES = [
+        { id: 'stake', name: 'Stake', image: '/themes/theme_thumb_stake_1772284954938.png', color: '#1fff20', desc: 'Classic dark mode with vibrant neon green accents.' },
+        { id: 'roobet', name: 'Roobet', image: '/themes/theme_thumb_roobet_1772284970850.png', color: '#e5c365', desc: 'Premium charcoal grey with rich golden yellow highlights.' },
+        { id: 'duelbits', name: 'Duelbits', image: '/themes/theme_thumb_duelbits_1772284996873.png', color: '#00e701', desc: 'High-energy navy black with piercing bright green edges.' },
+        { id: 'shuffle', name: 'Shuffle', image: '/themes/theme_thumb_shuffle_1772285011746.png', color: '#8e44ff', desc: 'Luxurious midnight blue with sleek electric purple gradients.' },
+        { id: 'neon', name: 'Neon Synthwave', image: '/themes/theme_thumb_neon_1772285037451.png', color: '#ff007f', desc: 'Vibrant retro-futuristic deep indigo with hot pink and cyan.' }
+    ];
 
     // Tier Helpers
     const nodeType = adminNode?.node_type || 'Super';
@@ -711,6 +720,69 @@ const SuperAdminDashboard = () => {
                                     ))}
                                 </tbody>
                             </table>
+                            {/* Pagination/Load More */}
+                            <div className="mt-6 flex justify-center">
+                                <button className="px-6 py-2 rounded-full border border-gray-800 text-gray-400 font-bold text-xs uppercase tracking-wider hover:border-gray-600 hover:text-white transition-all">
+                                    Load More Players
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'theme':
+                return (
+                    <div className="animate-fadeIn">
+                        <div className="flex justify-between items-end mb-8">
+                            <div>
+                                <h1 className="text-4xl font-display font-extrabold text-white mb-2 tracking-tight">Theme Settings</h1>
+                                <p className="text-gray-400 font-medium max-w-2xl">Customize the visual experience for your entire network. This theme will be applied to the homepage, game lobby, and all player-facing interfaces connected to your node.</p>
+                            </div>
+                            <div className="flex items-center gap-3 bg-bg-card px-4 py-2 rounded-xl border border-gray-800">
+                                <span className="text-gray-400 text-sm font-bold">Active Theme:</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: THEMES.find(t => t.id === activeTheme)?.color, color: THEMES.find(t => t.id === activeTheme)?.color }}></div>
+                                    <span className="text-white font-extrabold capitalize">{THEMES.find(t => t.id === activeTheme)?.name}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {THEMES.map((theme) => (
+                                <div
+                                    key={theme.id}
+                                    onClick={() => setNodeTheme(theme.id)}
+                                    className={`relative group cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 border-2 ${activeTheme === theme.id ? 'border-transparent scale-105 z-10' : 'border-gray-800 hover:border-gray-600 hover:-translate-y-1'}`}
+                                >
+                                    {/* Active State Glow */}
+                                    {activeTheme === theme.id && (
+                                        <div className="absolute inset-0 rounded-2xl" style={{ boxShadow: `0 0 20px ${theme.color}40, inset 0 0 2px ${theme.color}` }}></div>
+                                    )}
+
+                                    {/* Thumbnail Container */}
+                                    <div className="aspect-[16/10] w-full overflow-hidden bg-[#0a1622] relative">
+                                        <img
+                                            src={theme.image}
+                                            alt={`${theme.name} Preview`}
+                                            className={`w-full h-full object-cover transition-transform duration-700 ${activeTheme === theme.id ? 'scale-100' : 'scale-105 group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
+                                        />
+                                        {activeTheme === theme.id && (
+                                            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={theme.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ filter: `drop-shadow(0 0 4px ${theme.color})` }}><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                <span className="text-white text-[10px] font-extrabold uppercase tracking-widest">Active</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Theme Details */}
+                                    <div className={`p-5 bg-gradient-to-b from-bg-card to-bg-primary transition-colors ${activeTheme === theme.id ? 'border-t-2' : 'border-t border-gray-800'}`} style={{ borderColor: activeTheme === theme.id ? theme.color : '' }}>
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <div className="w-4 h-4 rounded-sm shadow-[0_0_10px_currentColor]" style={{ backgroundColor: theme.color, color: theme.color }}></div>
+                                            <h3 className="text-white font-extrabold text-lg">{theme.name}</h3>
+                                        </div>
+                                        <p className="text-gray-400 text-xs font-medium leading-relaxed">{theme.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 );
@@ -875,6 +947,23 @@ const SuperAdminDashboard = () => {
                         Security Centre
                     </button>
                 </nav>
+
+                <div className="mt-8 mb-4 border-t border-gray-800/50 pt-6">
+                    <p className="px-5 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Settings & Security</p>
+                    <nav className="space-y-1.5 px-3">
+                        <button
+                            onClick={() => setActiveTab('theme')}
+                            className={`w-full text-left px-5 py-3.5 rounded-xl font-bold transition-all flex items-center gap-3 ${activeTab === 'theme' ? 'bg-[#ff007f]/10 text-[#ff007f] shadow-[0_0_15px_rgba(255,0,127,0.15)] border border-[#ff007f]/20' : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'}`}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg>
+                            Theme Settings
+                        </button>
+                        <button className="w-full text-left px-5 py-3.5 rounded-xl text-gray-400 font-bold hover:bg-gray-800/50 hover:text-white transition-all flex items-center gap-3 opacity-50 cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            Security Audit (Soon)
+                        </button>
+                    </nav>
+                </div>
 
                 <div className="mt-auto p-4 border-t border-gray-800 bg-[#0f212e] space-y-2">
                     <button
