@@ -17,4 +17,17 @@ $routes->group('api/v1', function ($routes) {
 
     // Auth and Security logic block
     $routes->post('auth/verify_otp', 'AuthController::verifyOtp');
+    $routes->post('auth/node_login', 'AuthController::nodeLogin');
+
+    // Admin Dashboard logic block
+    $routes->group('admin', function ($routes) {
+        $routes->get('command', 'SuperAdminController::getCommandCenterMetrics');
+        $routes->post('conversion_rate', 'SuperAdminController::updateConversionRate');
+        $routes->get('revenue_tree', 'SuperAdminController::getRevenueTree');
+        $routes->get('my_tree', 'SuperAdminController::getScopedTree');
+        $routes->post('create_node', 'SuperAdminController::createChildNode');
+        $routes->post('regenerate_password', 'SuperAdminController::regeneratePassword');
+        $routes->post('toggle_node_status', 'SuperAdminController::toggleNodeStatus');
+        $routes->post('toggle_user_status', 'SuperAdminController::toggleUserStatus');
+    });
 });

@@ -14,8 +14,14 @@ export const useStore = create((set) => ({
     // Admin Auth State
     isAdminAuthenticated: false,
 
+    // Authenticated Node Identity (populated on login)
+    adminNode: null,
+    // Shape: { node_id, node_type, display_name, display_number, location, commission_rate, parent_node_id, username }
+
     // Actions
     setCurrentUser: (user) => set((state) => ({ currentUser: { ...state.currentUser, ...user } })),
     setGameState: (newState) => set({ gameState: newState }),
-    setAdminAuthenticated: (status) => set({ isAdminAuthenticated: status })
+    setAdminAuthenticated: (status) => set({ isAdminAuthenticated: status }),
+    setAdminNode: (node) => set({ adminNode: node, isAdminAuthenticated: true }),
+    logoutAdmin: () => set({ adminNode: null, isAdminAuthenticated: false })
 }));

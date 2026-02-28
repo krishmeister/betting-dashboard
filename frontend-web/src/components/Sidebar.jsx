@@ -63,7 +63,7 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <div className="mt-auto p-6 border-t border-white/5">
+            <div className="mt-auto p-6 border-t border-white/5 space-y-3">
                 <button className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-[#b1c0cd] hover:bg-[#1a2c38] hover:text-white transition-colors text-sm font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                     English

@@ -16,6 +16,10 @@ class NodeModel extends Model
     protected $allowedFields = [
         'user_id',
         'node_type',
+        'display_name',
+        'display_number',
+        'location',
+        'commission_rate',
         'status',
         'parent_node_id'
     ];
@@ -26,8 +30,9 @@ class NodeModel extends Model
 
     protected $validationRules = [
         'user_id' => 'required|integer',
-        'node_type' => 'required|in_list[Super,Master,Franchisee,Sub_Franchisee]',
-        'status' => 'in_list[active,inactive,suspended]',
+        'node_type' => 'required|max_length[50]',
+        'commission_rate' => 'decimal',
+        'status' => 'in_list[active,inactive,paused,banned]',
         'parent_node_id' => 'permit_empty|integer'
     ];
 }

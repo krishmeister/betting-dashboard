@@ -26,6 +26,14 @@ const App = () => {
                 {/* Full Screen Unwrapped Routes */}
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route path="/arena" element={<MotionArena />} />
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedAdminRoute>
+                            <SuperAdminDashboard />
+                        </ProtectedAdminRoute>
+                    }
+                />
 
                 {/* Dashboard Wrapped Routes */}
                 <Route
@@ -37,14 +45,6 @@ const App = () => {
                                 <Navbar />
                                 <main className="flex-1 overflow-y-auto">
                                     <Routes>
-                                        <Route
-                                            path="/admin"
-                                            element={
-                                                <ProtectedAdminRoute>
-                                                    <SuperAdminDashboard />
-                                                </ProtectedAdminRoute>
-                                            }
-                                        />
                                         <Route path="/lobby" element={<GameLobby />} />
                                         <Route path="*" element={<Navigate to="/lobby" replace />} />
                                     </Routes>

@@ -16,7 +16,13 @@ class UserModel extends Model
     protected $allowedFields = [
         'username',
         'email',
-        'password_hash'
+        'phone_number',
+        'is_phone_verified',
+        'location_country',
+        'location_city',
+        'status',
+        'password_hash',
+        'last_login_at'
     ];
 
     protected $useTimestamps = true;
@@ -26,6 +32,8 @@ class UserModel extends Model
     protected $validationRules = [
         'username' => 'required|alpha_numeric_space|min_length[3]|is_unique[users.username]',
         'email' => 'required|valid_email|is_unique[users.email]',
+        'phone_number' => 'permit_empty|max_length[20]',
+        'status' => 'in_list[active,paused,banned]',
         'password_hash' => 'required'
     ];
 }
