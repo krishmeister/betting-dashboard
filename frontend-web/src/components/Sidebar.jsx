@@ -27,12 +27,24 @@ const navCategories = [
     }
 ];
 
-const Sidebar = () => {
+const SidebarContent = ({ onClose }) => {
     const navigate = useNavigate();
-
     return (
-        <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-bg-nav h-full sticky top-0 overflow-y-auto border-r border-slate-200 dark:border-white/5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="p-6">
+        <div className="flex flex-col h-full w-64 bg-white dark:bg-bg-nav border-r border-slate-200 dark:border-white/5">
+            {/* Mobile close button */}
+            {onClose && (
+                <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-white/5 md:hidden">
+                    <span className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest">Menu</span>
+                    <button
+                        onClick={onClose}
+                        className="p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-bg-secondary transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            )}
+
+            <div className="p-6 flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 <div className="space-y-8">
                     {navCategories.map((category, idx) => (
                         <div key={idx}>
@@ -43,15 +55,15 @@ const Sidebar = () => {
                             )}
                             <ul className="space-y-1">
                                 {category.items.map(item => {
-                                    // Simulating the active state for Casino / Motion Games purely for visual polish review
                                     const isActive = item.name === 'Motion Games';
-
                                     return (
                                         <li key={item.id}>
-                                            <button className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-r-md text-sm font-semibold group transition-all duration-300 border-l-[3px]
+                                            <button
+                                                onClick={onClose}
+                                                className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-r-md text-sm font-semibold group transition-all duration-300 border-l-[3px]
                                                 ${isActive
-                                                    ? 'bg-[#8b5cf6]/10 text-slate-900 dark:text-white border-[#8b5cf6] shadow-[-4px_0_15px_-5px_rgba(139,92,246,0.5)]'
-                                                    : 'text-slate-500 dark:text-text-secondary border-transparent hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
+                                                        ? 'bg-[#8b5cf6]/10 text-slate-900 dark:text-white border-[#8b5cf6] shadow-[-4px_0_15px_-5px_rgba(139,92,246,0.5)]'
+                                                        : 'text-slate-500 dark:text-text-secondary border-transparent hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
                                             `}>
                                                 <span className={`${isActive ? 'text-[#8b5cf6] drop-shadow-[0_0_5px_rgba(139,92,246,0.6)]' : 'text-slate-400 dark:text-text-muted group-hover:text-slate-900 dark:group-hover:text-white transition-colors'}`}>
                                                     {item.icon}
@@ -72,13 +84,39 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <div className="mt-auto p-6 border-t border-slate-200 dark:border-border-primary space-y-3">
+            <div className="p-6 border-t border-slate-200 dark:border-border-primary space-y-3">
                 <button className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-slate-500 dark:text-text-secondary hover:bg-slate-100 dark:hover:bg-bg-primary hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                     English
                 </button>
             </div>
-        </aside>
+        </div>
+    );
+};
+
+const Sidebar = ({ isOpen, onClose }) => {
+    return (
+        <>
+            {/* Desktop sidebar — always visible on md+ */}
+            <aside className="hidden md:flex flex-col w-64 h-full sticky top-0 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <SidebarContent />
+            </aside>
+
+            {/* Mobile drawer overlay */}
+            {isOpen && (
+                <div className="fixed inset-0 z-50 md:hidden flex">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={onClose}
+                    />
+                    {/* Drawer panel — slides in from left */}
+                    <div className="relative flex flex-col h-full shadow-2xl animate-slideInLeft">
+                        <SidebarContent onClose={onClose} />
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
 

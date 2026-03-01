@@ -255,7 +255,7 @@ const GameLobby = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-3">
                         {shuffleGames.map(game => (
                             <GameGridCard
                                 key={game.id}
@@ -291,7 +291,7 @@ const GameLobby = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-3">
                         {slotsLive.map(game => (
                             <GameGridCard
                                 key={game.id}

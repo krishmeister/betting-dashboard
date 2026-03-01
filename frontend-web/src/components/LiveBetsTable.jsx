@@ -32,49 +32,51 @@ const LiveBetsTable = () => {
                 </div>
             </div>
 
-            <div className="bg-white/80 dark:bg-bg-primary/50 backdrop-blur-md rounded-xl overflow-hidden border border-slate-200 dark:border-border-primary shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <table className="w-full text-left text-sm whitespace-nowrap">
-                    <thead className="bg-bg-card border-b border-border-primary">
-                        <tr>
-                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Game</th>
-                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Player</th>
-                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Time</th>
-                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Wager</th>
-                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Multiplier</th>
-                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Payout</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                        {dummyData.map((row) => (
-                            <tr
-                                key={row.id}
-                                className="group transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5"
-                            >
-                                <td className="px-6 py-4 text-slate-900 dark:text-white flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-inner group-hover:border-[#8b5cf6]/50 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#8b5cf6] drop-shadow-[0_0_5px_rgba(139,92,246,0.6)]" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                    </div>
-                                    <span className="font-extrabold tracking-wide">{row.game}</span>
-                                </td>
-                                <td className="px-6 py-4 text-slate-500 dark:text-[#94a3b8] font-semibold">{row.user}</td>
-                                <td className="px-6 py-4 text-slate-400 dark:text-[#5f7096] opacity-80 font-bold text-xs">{row.time}</td>
-                                <td className="px-6 py-4 text-right">
-                                    <span className="flex items-center justify-end gap-1.5 text-slate-900 dark:text-white font-bold bg-slate-100 dark:bg-[#0B0E14] shadow-sm dark:shadow-inner px-2.5 py-1 rounded-md inline-flex w-max ml-auto border border-slate-200 dark:border-white/5">
-                                        {row.entry}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#5f7096]"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-extrabold tracking-wide">{row.mult}</td>
-                                <td className={`px-6 py-4 text-right font-black tracking-wide flex justify-end items-center gap-2 ${row.win ? 'text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]' : 'text-gray-500'}`}>
-                                    {row.payout}
-                                    {row.win && (
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-emerald-400" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
-                                    )}
-                                </td>
+            <div className="bg-white dark:bg-bg-card backdrop-blur-md rounded-xl overflow-hidden border border-slate-200 dark:border-border-primary shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm whitespace-nowrap min-w-[640px]">
+                        <thead className="bg-slate-50 dark:bg-bg-secondary border-b border-slate-200 dark:border-border-primary">
+                            <tr>
+                                <th className="px-6 py-5 text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Game</th>
+                                <th className="px-6 py-5 text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Player</th>
+                                <th className="px-6 py-5 text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Time</th>
+                                <th className="px-6 py-5 text-right text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Wager</th>
+                                <th className="px-6 py-5 text-right text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Multiplier</th>
+                                <th className="px-6 py-5 text-right text-slate-500 dark:text-text-muted font-bold uppercase tracking-widest text-[10px]">Payout</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 dark:divide-border-primary">
+                            {dummyData.map((row) => (
+                                <tr
+                                    key={row.id}
+                                    className="group transition-all duration-300 hover:bg-slate-50 dark:hover:bg-bg-secondary"
+                                >
+                                    <td className="px-6 py-4 text-slate-900 dark:text-white flex items-center gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-bg-secondary border border-slate-200 dark:border-border-primary flex items-center justify-center shadow-inner group-hover:border-[#8b5cf6]/50 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#8b5cf6] drop-shadow-[0_0_5px_rgba(139,92,246,0.6)]" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        </div>
+                                        <span className="font-extrabold tracking-wide">{row.game}</span>
+                                    </td>
+                                    <td className="px-6 py-4 text-slate-500 dark:text-text-secondary font-semibold">{row.user}</td>
+                                    <td className="px-6 py-4 text-slate-400 dark:text-text-muted opacity-80 font-bold text-xs">{row.time}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        <span className="flex items-center justify-end gap-1.5 text-slate-900 dark:text-white font-bold bg-slate-100 dark:bg-bg-secondary shadow-sm dark:shadow-inner px-2.5 py-1 rounded-md inline-flex w-max ml-auto border border-slate-200 dark:border-border-primary">
+                                            {row.entry}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 dark:text-text-muted"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-extrabold tracking-wide">{row.mult}</td>
+                                    <td className={`px-6 py-4 text-right font-black tracking-wide flex justify-end items-center gap-2 ${row.win ? 'text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]' : 'text-gray-500'}`}>
+                                        {row.payout}
+                                        {row.win && (
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-emerald-400" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Table Footer */}
                 <div className="bg-bg-card border-t border-border-primary py-4 flex justify-center">

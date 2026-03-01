@@ -9,12 +9,12 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
 const DashboardLayout = ({ children }) => {
-    const activeTheme = useStore(state => state.activeTheme);
+    const [sidebarOpen, setSidebarOpen] = React.useState(false);
     return (
         <div className="flex flex-col min-h-screen bg-bg-app text-text-primary overflow-hidden">
-            <Navbar />
+            <Navbar onMenuOpen={() => setSidebarOpen(true)} />
             <div className="flex flex-1 min-h-0 relative">
-                <Sidebar />
+                <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                 <main className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {children}
                 </main>

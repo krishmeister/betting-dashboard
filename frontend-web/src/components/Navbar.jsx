@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store';
 import { EconomyService } from '../services/api';
 
-const Navbar = () => {
+const Navbar = ({ onMenuOpen }) => {
     const navigate = useNavigate();
     const { currentUser } = useStore();
     const [balance, setBalance] = useState(0);
@@ -68,7 +68,7 @@ const Navbar = () => {
 
             {/* Logo Section (Aligns rigidly with Sidebar width below it) */}
             <div className="flex items-center gap-4 w-56 shrink-0 mr-4">
-                <button className="md:hidden text-slate-400 dark:text-text-muted hover:text-slate-900 dark:hover:text-white transition-colors">
+                <button onClick={onMenuOpen} className="md:hidden text-slate-400 dark:text-text-muted hover:text-slate-900 dark:hover:text-white transition-colors p-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
                 <div

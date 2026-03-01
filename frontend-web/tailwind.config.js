@@ -40,6 +40,7 @@ export default {
             animation: {
                 'marquee': 'marquee 30s linear infinite',
                 'soft-pulse': 'soft-pulse 2s ease-in-out infinite',
+                'slideInLeft': 'slideInLeft 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
             },
             keyframes: {
                 marquee: {
@@ -49,6 +50,10 @@ export default {
                 'soft-pulse': {
                     '0%, 100%': { transform: 'scale(1)' },
                     '50%': { transform: 'scale(1.05)' },
+                },
+                'slideInLeft': {
+                    '0%': { transform: 'translateX(-100%)' },
+                    '100%': { transform: 'translateX(0)' },
                 }
             }
         },
