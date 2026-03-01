@@ -2,33 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* View Transition API — Ripple animation layer control */
-::view-transition-old(root),
-::view-transition-new(root) {
+/* ── Kill ALL CSS transitions while a View Transition is running ──
+   This prevents elements from animating their colors behind the
+   clip-path ripple, which causes flicker and choppiness.           */
+html::view-transition-old(root),
+html::view-transition-new(root) {
     animation: none;
     mix-blend-mode: normal;
 }
 
-.dark::view-transition-old(root) {
+html.dark::view-transition-old(root) {
     z-index: 1;
 }
 
-.dark::view-transition-new(root) {
+html.dark::view-transition-new(root) {
     z-index: 2147483646;
 }
 
-::view-transition-old(root) {
+html:not(.dark)::view-transition-old(root) {
     z-index: 2147483646;
 }
 
-::view-transition-new(root) {
+html:not(.dark)::view-transition-new(root) {
     z-index: 1;
 }
 
 @layer base {
     body {
         background-color: var(--bg-primary);
-        color: #e2e8f0;
+        color: var(--text-primary);
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -43,6 +45,15 @@
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 1rem;
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .dark .glass-panel {
+        background: rgba(15, 23, 42, 0.6);
+    }
+
+    html:not(.dark) .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .text-gradient {

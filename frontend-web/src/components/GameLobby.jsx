@@ -11,7 +11,7 @@ const GameGridCard = ({ title, category, players, entryFee, hot, onSelect, image
         className="group relative flex flex-col cursor-pointer transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(147,51,234,0.5)] active:scale-95 hover:z-10 rounded-xl"
     >
         {/* Borderless Web3 Thumbnail Box */}
-        <div className="w-full aspect-[3/4] rounded-xl overflow-hidden relative bg-slate-100 dark:bg-[#090e13] transition-all duration-300 group-hover:ring-2 group-hover:ring-purple-500/50">
+        <div className="w-full aspect-[3/4] rounded-xl overflow-hidden relative bg-slate-200 dark:bg-[#090e13] transition-all duration-300 group-hover:ring-2 group-hover:ring-purple-500/50">
             {image && (
                 <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
             )}
@@ -29,7 +29,7 @@ const GameGridCard = ({ title, category, players, entryFee, hot, onSelect, image
             )}
 
             {/* Vibrant Gradient Overlay (Bottom 30%) for Text Readability */}
-            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14]/80 to-transparent z-10 flex flex-col justify-end p-2 pb-2.5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/90 via-black/60 dark:from-[#0B0E14] dark:via-[#0B0E14]/80 to-transparent z-10 flex flex-col justify-end p-2 pb-2.5 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                 <p className="text-white text-[12px] font-bold truncate drop-shadow-md">{title}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#10b981] shadow-[0_0_5px_rgba(16,185,129,0.8)]"></div>
@@ -153,7 +153,7 @@ const GameLobby = () => {
     return (
         <div className="w-full flex-1 flex flex-col">
             {/* Live Activity Ticker */}
-            <div className="w-full bg-slate-50 dark:bg-[#0B0E14] border-b border-slate-200 dark:border-[#1e293b] overflow-hidden h-8 relative">
+            <div className="w-full bg-slate-100 dark:bg-[#0B0E14] border-b border-slate-200 dark:border-[#1e293b] overflow-hidden h-8 relative">
                 <div className="absolute inset-0 flex items-center">
                     <div className="inline-flex animate-marquee hover:[animation-play-state:paused] whitespace-nowrap text-[10px] font-bold text-slate-500 dark:text-[#94a3b8] tracking-widest uppercase gap-10 items-center">
                         <span>🎉 MotionKing just won <span className="text-[#06b6d4] drop-shadow-[0_0_5px_rgba(6,182,212,0.8)]">5,000 CR</span> in Fruit Ninja!</span>
@@ -178,38 +178,38 @@ const GameLobby = () => {
                 {/* Web3 Triple Promo Banners */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-8">
                     {/* Banner 1: Purple Spotlight */}
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#1a0b2e] to-[#0B0E14] shadow-[0_4px_20px_rgba(139,92,246,0.15)] border border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(139,92,246,0.3)] transition-all duration-300">
+                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-100 to-white dark:from-[#1a0b2e] dark:to-[#0B0E14] shadow-[0_4px_20px_rgba(139,92,246,0.1)] dark:shadow-[0_4px_20px_rgba(139,92,246,0.15)] border border-purple-200/50 dark:border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(139,92,246,0.2)] dark:hover:shadow-[0_8px_30px_rgba(139,92,246,0.3)] transition-all duration-300">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
                         <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-purple-500/20 rounded-full blur-[40px] group-hover:bg-purple-500/30 transition-colors"></div>
                         <div className="relative z-10 w-full text-center">
-                            <h2 className="text-2xl lg:text-3xl font-display font-black text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Boost Your Level!</h2>
-                            <button className="px-5 py-2 bg-white text-[#4c1d95] rounded-full font-black text-[10px] transition-all duration-200 active:scale-95 hover:brightness-110 shadow-lg uppercase tracking-[0.2em] animate-soft-pulse">
+                            <h2 className="text-2xl lg:text-3xl font-display font-black text-slate-900 dark:text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Boost Your Level!</h2>
+                            <button className="px-5 py-2 bg-purple-600 text-white dark:bg-white dark:text-[#4c1d95] rounded-full font-black text-[10px] transition-all duration-200 active:scale-95 hover:brightness-110 shadow-lg uppercase tracking-[0.2em] animate-soft-pulse">
                                 Claim Boost
                             </button>
                         </div>
                     </div>
 
                     {/* Banner 2: Cyan Spotlight */}
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#061a1e] to-[#0B0E14] shadow-[0_4px_20px_rgba(6,182,212,0.15)] border border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(6,182,212,0.3)] transition-all duration-300">
+                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-cyan-50 to-white dark:from-[#061a1e] dark:to-[#0B0E14] shadow-[0_4px_20px_rgba(6,182,212,0.1)] dark:shadow-[0_4px_20px_rgba(6,182,212,0.15)] border border-cyan-200/50 dark:border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(6,182,212,0.2)] dark:hover:shadow-[0_8px_30px_rgba(6,182,212,0.3)] transition-all duration-300">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 mix-blend-overlay"></div>
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
                         <div className="absolute -left-8 -top-8 w-32 h-32 bg-cyan-500/20 rounded-full blur-[40px] group-hover:bg-cyan-500/30 transition-colors"></div>
                         <div className="relative z-10 w-full text-center">
-                            <h2 className="text-2xl lg:text-3xl font-display font-black text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Whack-a-Mole Takeover</h2>
-                            <button className="px-5 py-2 bg-[#0B0E14] text-[#06b6d4] rounded-full font-black text-[10px] transition-all duration-200 active:scale-95 hover:brightness-110 shadow-[0_0_15px_rgba(6,182,212,0.4)] uppercase tracking-[0.2em] border border-[#06b6d4]/50 animate-soft-pulse">
+                            <h2 className="text-2xl lg:text-3xl font-display font-black text-slate-900 dark:text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Whack-a-Mole Takeover</h2>
+                            <button className="px-5 py-2 bg-[#06b6d4] text-white dark:bg-[#0B0E14] dark:text-[#06b6d4] rounded-full font-black text-[10px] transition-all duration-200 active:scale-95 hover:brightness-110 shadow-[0_0_15px_rgba(6,182,212,0.4)] uppercase tracking-[0.2em] border border-[#06b6d4]/50 animate-soft-pulse">
                                 Play Now
                             </button>
                         </div>
                     </div>
 
                     {/* Banner 3: Orange/Red Spotlight */}
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#2a0808] to-[#0B0E14] shadow-[0_4px_20px_rgba(244,63,94,0.15)] border border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(244,63,94,0.3)] transition-all duration-300">
+                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-rose-50 to-white dark:from-[#2a0808] dark:to-[#0B0E14] shadow-[0_4px_20px_rgba(244,63,94,0.1)] dark:shadow-[0_4px_20px_rgba(244,63,94,0.15)] border border-rose-200/50 dark:border-white/5 backdrop-blur-md flex items-center justify-center p-6 cursor-pointer group min-h-[140px] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(244,63,94,0.2)] dark:hover:shadow-[0_8px_30px_rgba(244,63,94,0.3)] transition-all duration-300">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-30 mix-blend-overlay"></div>
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
                         <div className="absolute right-0 top-0 w-24 h-24 bg-rose-500/20 rounded-full blur-[40px] translate-x-1/2 -translate-y-1/2 group-hover:bg-rose-500/30 transition-colors"></div>
                         <div className="relative z-10 w-full text-center">
-                            <h2 className="text-2xl lg:text-3xl font-display font-black text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Elev8 Live Arenas</h2>
+                            <h2 className="text-2xl lg:text-3xl font-display font-black text-slate-900 dark:text-white italic tracking-tighter mb-2 uppercase drop-shadow-md">Elev8 Live Arenas</h2>
                             <button onClick={handleFindMatch} className="px-5 py-2 bg-white text-rose-600 rounded-full font-black text-[10px] transition-all duration-200 active:scale-95 hover:brightness-110 shadow-lg uppercase tracking-[0.2em] animate-soft-pulse">
                                 Enter Arena
                             </button>
