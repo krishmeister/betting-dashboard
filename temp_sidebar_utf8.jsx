@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const navCategories = [
@@ -31,49 +31,47 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     return (
-        <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-bg-nav h-full sticky top-0 overflow-y-auto border-r border-slate-200 dark:border-white/5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <aside className="hidden md:flex flex-col w-64 bg-[#0f212e] h-screen sticky top-0 overflow-y-auto border-r border-white/5 scrollbar-hide">
             <div className="p-6">
+                <div
+                    className="flex items-center gap-2 cursor-pointer mb-8"
+                    onClick={() => navigate('/lobby')}
+                >
+                    <div className="w-8 h-8 rounded bg-[#1fff20] flex items-center justify-center text-black font-extrabold text-xl shadow-[0_0_15px_rgba(31,255,32,0.4)]">
+                        8
+                    </div>
+                    <span className="text-2xl font-display font-bold text-white tracking-widest uppercase">
+                        ELEV<span className="text-[#1fff20]">8</span>
+                    </span>
+                </div>
+
                 <div className="space-y-8">
                     {navCategories.map((category, idx) => (
                         <div key={idx}>
                             {category.title && (
-                                <h4 className="text-slate-400 dark:text-text-muted text-xs font-bold uppercase tracking-wider mb-3 px-2">
+                                <h4 className="text-[#8798a4] text-xs font-bold uppercase tracking-wider mb-3 px-2">
                                     {category.title}
                                 </h4>
                             )}
                             <ul className="space-y-1">
-                                {category.items.map(item => {
-                                    // Simulating the active state for Casino / Motion Games purely for visual polish review
-                                    const isActive = item.name === 'Motion Games';
-
-                                    return (
-                                        <li key={item.id}>
-                                            <button className={`w-full relative flex items-center gap-3 px-3 py-2.5 rounded-r-md text-sm font-semibold group transition-all duration-300 border-l-[3px]
-                                                ${isActive
-                                                    ? 'bg-[#8b5cf6]/10 text-slate-900 dark:text-white border-[#8b5cf6] shadow-[-4px_0_15px_-5px_rgba(139,92,246,0.5)]'
-                                                    : 'text-slate-500 dark:text-text-secondary border-transparent hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}
-                                            `}>
-                                                <span className={`${isActive ? 'text-[#8b5cf6] drop-shadow-[0_0_5px_rgba(139,92,246,0.6)]' : 'text-slate-400 dark:text-text-muted group-hover:text-slate-900 dark:group-hover:text-white transition-colors'}`}>
-                                                    {item.icon}
-                                                </span>
-                                                {item.name}
-                                                {item.name === 'VIP Club' && (
-                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center px-1.5 py-0.5 bg-[#8b5cf6] text-white text-[9px] font-black rounded-full uppercase tracking-widest shadow-[0_0_10px_rgba(139,92,246,0.8)] animate-pulse">
-                                                        New
-                                                    </span>
-                                                )}
-                                            </button>
-                                        </li>
-                                    );
-                                })}
+                                {category.items.map(item => (
+                                    <li key={item.id}>
+                                        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-[#b1c0cd] hover:bg-[#1a2c38] hover:text-white transition-colors text-sm font-semibold group">
+                                            <span className="text-[#8798a4] group-hover:text-white transition-colors">
+                                                {item.icon}
+                                            </span>
+                                            {item.name}
+                                        </button>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="mt-auto p-6 border-t border-slate-200 dark:border-border-primary space-y-3">
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-slate-500 dark:text-text-secondary hover:bg-slate-100 dark:hover:bg-bg-primary hover:text-slate-900 dark:hover:text-white transition-colors text-sm font-semibold">
+            <div className="mt-auto p-6 border-t border-white/5 space-y-3">
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-[#b1c0cd] hover:bg-[#1a2c38] hover:text-white transition-colors text-sm font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                     English
                 </button>

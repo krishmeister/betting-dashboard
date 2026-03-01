@@ -7,6 +7,7 @@ const SuperAdminDashboard = () => {
     const { currentUser, adminNode, logoutAdmin, activeTheme, setNodeTheme } = useStore();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('command');
+    const [selectedTheme, setSelectedTheme] = useState(activeTheme);
 
     // Available Themes Setup
     const THEMES = [
@@ -737,12 +738,23 @@ const SuperAdminDashboard = () => {
                                 <h1 className="text-4xl font-display font-extrabold text-white mb-2 tracking-tight">Theme Settings</h1>
                                 <p className="text-gray-400 font-medium max-w-2xl">Customize the visual experience for your entire network. This theme will be applied to the homepage, game lobby, and all player-facing interfaces connected to your node.</p>
                             </div>
-                            <div className="flex items-center gap-3 bg-bg-card px-4 py-2 rounded-xl border border-gray-800">
-                                <span className="text-gray-400 text-sm font-bold">Active Theme:</span>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: THEMES.find(t => t.id === activeTheme)?.color, color: THEMES.find(t => t.id === activeTheme)?.color }}></div>
-                                    <span className="text-white font-extrabold capitalize">{THEMES.find(t => t.id === activeTheme)?.name}</span>
+                            <div className="flex gap-4 items-end">
+                                <div className="flex items-center gap-3 bg-bg-card px-4 py-2 rounded-xl border border-gray-800 h-[42px]">
+                                    <span className="text-gray-400 text-sm font-bold">Active Theme:</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: THEMES.find(t => t.id === activeTheme)?.color, color: THEMES.find(t => t.id === activeTheme)?.color }}></div>
+                                        <span className="text-white font-extrabold capitalize">{THEMES.find(t => t.id === activeTheme)?.name}</span>
+                                    </div>
                                 </div>
+                                {selectedTheme !== activeTheme && (
+                                    <button
+                                        onClick={() => setNodeTheme(selectedTheme)}
+                                        className="h-[42px] px-6 rounded-xl bg-gradient-to-r from-accent-purple to-accent-cyan text-black font-extrabold text-sm tracking-wide hover:shadow-[0_0_20px_rgba(176,38,255,0.4)] active:scale-[0.98] transition-all flex items-center gap-2 animate-fadeIn"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                                        Save Theme
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -750,11 +762,11 @@ const SuperAdminDashboard = () => {
                             {THEMES.map((theme) => (
                                 <div
                                     key={theme.id}
-                                    onClick={() => setNodeTheme(theme.id)}
-                                    className={`relative group cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 border-2 ${activeTheme === theme.id ? 'border-transparent scale-105 z-10' : 'border-gray-800 hover:border-gray-600 hover:-translate-y-1'}`}
+                                    onClick={() => setSelectedTheme(theme.id)}
+                                    className={`relative group cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 border-2 ${selectedTheme === theme.id ? 'border-transparent scale-105 z-10' : 'border-gray-800 hover:border-gray-600 hover:-translate-y-1'}`}
                                 >
                                     {/* Active State Glow */}
-                                    {activeTheme === theme.id && (
+                                    {selectedTheme === theme.id && (
                                         <div className="absolute inset-0 rounded-2xl" style={{ boxShadow: `0 0 20px ${theme.color}40, inset 0 0 2px ${theme.color}` }}></div>
                                     )}
 
@@ -763,10 +775,10 @@ const SuperAdminDashboard = () => {
                                         <img
                                             src={theme.image}
                                             alt={`${theme.name} Preview`}
-                                            className={`w-full h-full object-cover transition-transform duration-700 ${activeTheme === theme.id ? 'scale-100' : 'scale-105 group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
+                                            className={`w-full h-full object-cover transition-transform duration-700 ${selectedTheme === theme.id ? 'scale-100' : 'scale-105 group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
                                         />
                                         {activeTheme === theme.id && (
-                                            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                                            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-white/10 z-20">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={theme.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ filter: `drop-shadow(0 0 4px ${theme.color})` }}><polyline points="20 6 9 17 4 12"></polyline></svg>
                                                 <span className="text-white text-[10px] font-extrabold uppercase tracking-widest">Active</span>
                                             </div>
@@ -774,7 +786,7 @@ const SuperAdminDashboard = () => {
                                     </div>
 
                                     {/* Theme Details */}
-                                    <div className={`p-5 bg-gradient-to-b from-bg-card to-bg-primary transition-colors ${activeTheme === theme.id ? 'border-t-2' : 'border-t border-gray-800'}`} style={{ borderColor: activeTheme === theme.id ? theme.color : '' }}>
+                                    <div className={`p-5 bg-gradient-to-b from-bg-card to-bg-primary transition-colors ${selectedTheme === theme.id ? 'border-t-2' : 'border-t border-gray-800'}`} style={{ borderColor: selectedTheme === theme.id ? theme.color : '' }}>
                                         <div className="flex items-center gap-3 mb-2">
                                             <div className="w-4 h-4 rounded-sm shadow-[0_0_10px_currentColor]" style={{ backgroundColor: theme.color, color: theme.color }}></div>
                                             <h3 className="text-white font-extrabold text-lg">{theme.name}</h3>

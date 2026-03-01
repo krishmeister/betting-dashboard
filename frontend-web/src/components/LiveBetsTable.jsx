@@ -18,57 +18,57 @@ const LiveBetsTable = () => {
         <div className="w-full mt-16 mb-8">
             <div className="flex items-center gap-4 mb-6 px-2">
                 <div className="flex gap-2">
-                    <button className="px-5 py-2 rounded-full bg-gradient-to-r from-[var(--accent)]/20 to-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] font-extrabold text-sm uppercase tracking-wider shadow-[0_0_15px_var(--accent-glow)] transition-all flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] shadow-[0_0_8px_var(--accent)] animate-pulse"></div>
+                    <button className="px-5 py-2 rounded-full bg-[#8b5cf6]/10 border border-[#8b5cf6] text-[#8b5cf6] font-extrabold text-sm uppercase tracking-wider shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.8)] animate-pulse"></div>
                         All Bets
                     </button>
-                    <button className="px-5 py-2 rounded-full border border-transparent text-[var(--text-muted)] font-bold text-sm uppercase tracking-wider hover:bg-white/5 hover:text-white transition-all">
+                    <button className="px-5 py-2 rounded-full border border-transparent text-slate-500 dark:text-text-muted font-bold text-sm uppercase tracking-wider hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all">
                         High Rollers
                     </button>
-                    <button className="px-5 py-2 rounded-full border border-transparent flex items-center gap-2 text-[var(--text-muted)] font-bold text-sm uppercase tracking-wider hover:bg-white/5 hover:text-white transition-all">
+                    <button className="px-5 py-2 rounded-full border border-transparent flex items-center gap-2 text-slate-500 dark:text-text-muted font-bold text-sm uppercase tracking-wider hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         My Bets
                     </button>
                 </div>
             </div>
 
-            <div className="bg-[var(--bg-primary)]/50 backdrop-blur-md rounded-xl overflow-hidden border border-[var(--border-color)] shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+            <div className="bg-white/80 dark:bg-bg-primary/50 backdrop-blur-md rounded-xl overflow-hidden border border-slate-200 dark:border-border-primary shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                 <table className="w-full text-left text-sm whitespace-nowrap">
-                    <thead className="bg-[var(--bg-tertiary)] border-b border-[var(--border-color)]">
+                    <thead className="bg-bg-card border-b border-border-primary">
                         <tr>
-                            <th className="px-6 py-5 text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Game</th>
-                            <th className="px-6 py-5 text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Player</th>
-                            <th className="px-6 py-5 text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Time</th>
-                            <th className="px-6 py-5 text-right text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Wager</th>
-                            <th className="px-6 py-5 text-right text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Multiplier</th>
-                            <th className="px-6 py-5 text-right text-[var(--text-muted)] font-bold uppercase tracking-widest text-[10px]">Payout</th>
+                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Game</th>
+                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Player</th>
+                            <th className="px-6 py-5 text-text-muted font-bold uppercase tracking-widest text-[10px]">Time</th>
+                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Wager</th>
+                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Multiplier</th>
+                            <th className="px-6 py-5 text-right text-text-muted font-bold uppercase tracking-widest text-[10px]">Payout</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-[var(--border-color)]">
+                    <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                         {dummyData.map((row) => (
                             <tr
                                 key={row.id}
-                                className="group transition-all duration-300 hover:bg-white/[0.03] border-l-[3px] border-transparent hover:border-l-[var(--accent)]"
+                                className="group transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5"
                             >
-                                <td className="px-6 py-4 text-[var(--text-main)] flex items-center gap-4">
-                                    <div className="w-8 h-8 rounded-lg bg-black/40 border border-[var(--border-color)] flex items-center justify-center shadow-inner group-hover:border-[var(--accent)]/30 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_0_5px_var(--accent-glow)]"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <td className="px-6 py-4 text-slate-900 dark:text-white flex items-center gap-4">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 flex items-center justify-center shadow-inner group-hover:border-[#8b5cf6]/50 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-[#8b5cf6] drop-shadow-[0_0_5px_rgba(139,92,246,0.6)]" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                     </div>
                                     <span className="font-extrabold tracking-wide">{row.game}</span>
                                 </td>
-                                <td className="px-6 py-4 text-[var(--text-subtle)] font-semibold">{row.user}</td>
-                                <td className="px-6 py-4 text-[var(--text-muted)] opacity-80 font-bold text-xs">{row.time}</td>
+                                <td className="px-6 py-4 text-slate-500 dark:text-[#94a3b8] font-semibold">{row.user}</td>
+                                <td className="px-6 py-4 text-slate-400 dark:text-[#5f7096] opacity-80 font-bold text-xs">{row.time}</td>
                                 <td className="px-6 py-4 text-right">
-                                    <span className="flex items-center justify-end gap-1.5 text-[var(--text-main)] font-bold bg-white/5 px-2.5 py-1 rounded inline-flex w-max ml-auto border border-white/5">
+                                    <span className="flex items-center justify-end gap-1.5 text-slate-900 dark:text-white font-bold bg-slate-100 dark:bg-[#0B0E14] shadow-sm dark:shadow-inner px-2.5 py-1 rounded-md inline-flex w-max ml-auto border border-slate-200 dark:border-white/5">
                                         {row.entry}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-muted)]"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#5f7096]"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
                                     </span>
                                 </td>
-                                <td className="px-6 py-4 text-right text-[var(--text-main)] font-extrabold tracking-wide">{row.mult}</td>
-                                <td className={`px-6 py-4 text-right font-black tracking-wide flex justify-end items-center gap-2 ${row.win ? 'text-[var(--accent)] drop-shadow-[0_0_8px_var(--accent-glow)]' : 'text-[var(--text-muted)]'}`}>
+                                <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-extrabold tracking-wide">{row.mult}</td>
+                                <td className={`px-6 py-4 text-right font-black tracking-wide flex justify-end items-center gap-2 ${row.win ? 'text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]' : 'text-gray-500'}`}>
                                     {row.payout}
                                     {row.win && (
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_0_5px_var(--accent-glow)]"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-emerald-400" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
                                     )}
                                 </td>
                             </tr>
@@ -77,8 +77,8 @@ const LiveBetsTable = () => {
                 </table>
 
                 {/* Table Footer */}
-                <div className="bg-[var(--bg-tertiary)] border-t border-[var(--border-color)] py-4 flex justify-center">
-                    <button className="text-[var(--text-muted)] hover:text-white font-extrabold text-[11px] uppercase tracking-[0.2em] transition-colors py-1 px-4 rounded hover:bg-white/5">Load More</button>
+                <div className="bg-bg-card border-t border-border-primary py-4 flex justify-center">
+                    <button className="text-slate-400 dark:text-text-muted hover:text-slate-900 dark:hover:text-white font-extrabold text-[11px] uppercase tracking-[0.2em] transition-colors py-1 px-4 rounded hover:bg-slate-100 dark:hover:bg-white/5">Load More</button>
                 </div>
             </div>
         </div>
