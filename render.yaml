@@ -16,6 +16,7 @@ services:
     env: docker
     plan: free
     region: ohio
+    dockerContext: ./backend-node-realtime
     dockerfilePath: ./backend-node-realtime/Dockerfile
     envVars:
       - key: PORT
