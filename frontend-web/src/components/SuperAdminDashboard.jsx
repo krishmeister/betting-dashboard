@@ -953,8 +953,8 @@ const SuperAdminDashboard = () => {
 
             {/* Super Admin Dashboard Embedded Sidebar */}
             <div className="w-64 bg-[#0f212e] border-r border-gray-800 shrink-0 hidden md:flex flex-col select-none">
-                <div className="p-6 border-b border-gray-800">
-                    <h1 className="text-xl font-display font-extrabold text-white tracking-wide uppercase">{getDashboardTitle()}</h1>
+                <div className="p-6 border-b border-gray-800 cursor-pointer group" onClick={() => navigate('/lobby')}>
+                    <h1 className="text-xl font-display font-extrabold text-white tracking-wide uppercase group-hover:text-accent-brand transition-colors">{getDashboardTitle()}</h1>
                     <p className="text-[#8798a4] text-xs mt-1 uppercase tracking-widest font-bold">{adminNode?.display_name || 'Elev8 Core Admin'}</p>
                 </div>
 
