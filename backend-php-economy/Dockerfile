@@ -17,7 +17,7 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Ensure the writable directory is owned by the Apache user
-RUN chown -R www-data:www-data /var/www/html/writable
+# Ensure the writable directory exists and is owned by the Apache user
+RUN mkdir -p /var/www/html/writable && chown -R www-data:www-data /var/www/html/writable
 
 EXPOSE 80
