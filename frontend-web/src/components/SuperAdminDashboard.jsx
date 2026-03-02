@@ -120,11 +120,43 @@ const SuperAdminDashboard = () => {
         return rows;
     };
 
+    const loadLiveNetworkData = async () => {
+        setLoading(true);
+        try {
+            // Fetch live data passing the currently authenticated admin node ID 
+            // If super, it fetches entire tree. If underneath, it fetches down-line.
+            const data = await EconomyService.fetchNetworkData(adminNode?.id || 'super');
+
+            if (data && data.metrics) {
+                setSystemMetrics(data.metrics);
+            }
+            if (data && data.revenueTree) {
+                setRevenueTree(data.revenueTree);
+            }
+            if (data && data.players) {
+                setPlayerData(data.players);
+            }
+        } catch (error) {
+            console.error("Failed to fetch live network topology. Falling back to safe simulation for UI testing:", error);
+            // Fallback for UI visualization purposes while endpoint is actively being built
+            simulateDataLoad();
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        // In full prod, these would be API calls to /api/v1/admin/command etc.
-        // For now, load simulated structure 
-        simulateDataLoad();
-    }, []);
+        loadLiveNetworkData();
+
+        // Setup polling interval for live dashboard metrics
+        const interval = setInterval(() => {
+            if (activeTab === 'command' || activeTab === 'revenue') {
+                loadLiveNetworkData();
+            }
+        }, 15000); // Poll every 15s
+
+        return () => clearInterval(interval);
+    }, [activeTab]);
 
     const simulateDataLoad = () => {
         setSystemMetrics({

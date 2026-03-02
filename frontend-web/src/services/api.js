@@ -42,5 +42,18 @@ export const EconomyService = {
             console.error('API Error fetching balance:', error.response?.data || error.message);
             throw error;
         }
+    },
+
+    // Fetch the live network topology and analytics for the Command Center
+    fetchNetworkData: async (nodeId) => {
+        try {
+            // Note: Replace with actual GET /network_status endpoint when built on PHP side
+            const response = await api.get(`/network_status?node_id=${nodeId}`);
+            // Returning the expected payload structure to replace current mocked states
+            return response.data;
+        } catch (error) {
+            console.error('API Error fetching network data:', error.response?.data || error.message);
+            throw error;
+        }
     }
 };

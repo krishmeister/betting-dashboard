@@ -2,9 +2,9 @@
 -- Expands the Elev8 schema to support infinite nodes, settlements, and security states.
 
 -- 1. Alter nodes table to support infinite tier naming conventions and rev shares
-ALTER TABLE nodes MODIFY COLUMN node_type VARCHAR(50) NOT NULL;
-ALTER TABLE nodes ADD COLUMN commission_rate DECIMAL(5, 2) DEFAULT 0.00 AFTER node_type;
-ALTER TABLE nodes MODIFY COLUMN status ENUM('active', 'inactive', 'paused', 'banned') DEFAULT 'active';
+-- ALTER TABLE nodes MODIFY COLUMN node_type VARCHAR(50) NOT NULL;
+-- ALTER TABLE nodes ADD COLUMN commission_rate DECIMAL(5, 2) DEFAULT 0.00 AFTER node_type;
+-- ALTER TABLE nodes MODIFY COLUMN status ENUM('active', 'inactive', 'paused', 'banned') DEFAULT 'active';
 
 -- 2. Create Global Settings table
 CREATE TABLE IF NOT EXISTS global_settings (
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS settlements (
 );
 
 -- 4. Alter users table for geolocation and session stickiness
-ALTER TABLE users ADD COLUMN location_country VARCHAR(100) DEFAULT NULL AFTER email;
-ALTER TABLE users ADD COLUMN location_city VARCHAR(100) DEFAULT NULL AFTER location_country;
-ALTER TABLE users ADD COLUMN status ENUM('active', 'paused', 'banned') DEFAULT 'active' AFTER is_phone_verified;
-ALTER TABLE users ADD COLUMN last_login_at TIMESTAMP NULL AFTER status;
+-- ALTER TABLE users ADD COLUMN location_country VARCHAR(100) DEFAULT NULL AFTER email;
+-- ALTER TABLE users ADD COLUMN location_city VARCHAR(100) DEFAULT NULL AFTER location_country;
+-- ALTER TABLE users ADD COLUMN status ENUM('active', 'paused', 'banned') DEFAULT 'active' AFTER is_phone_verified;
+-- ALTER TABLE users ADD COLUMN last_login_at TIMESTAMP NULL AFTER status;

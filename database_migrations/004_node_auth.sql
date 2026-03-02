@@ -12,9 +12,12 @@ CREATE TABLE IF NOT EXISTS node_credentials (
 );
 
 -- 2. Add display metadata columns to nodes
-ALTER TABLE nodes ADD COLUMN display_name VARCHAR(255) DEFAULT NULL AFTER node_type;
-ALTER TABLE nodes ADD COLUMN display_number VARCHAR(20) DEFAULT NULL AFTER display_name;
-ALTER TABLE nodes ADD COLUMN location VARCHAR(255) DEFAULT NULL AFTER display_number;
+-- ALTER TABLE nodes ADD COLUMN display_name VARCHAR(255) DEFAULT NULL AFTER node_type;
+-- ALTER TABLE nodes ADD COLUMN display_number VARCHAR(20) DEFAULT NULL AFTER display_name;
+-- ALTER TABLE nodes ADD COLUMN location VARCHAR(255) DEFAULT NULL AFTER display_number;
+
+-- 2.5 Seed Super User
+INSERT IGNORE INTO users (id, username, email, password_hash) VALUES (1, 'superadmin', 'super@elev8.core', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
 -- 3. Seed the Super node (if not exists)
 INSERT INTO nodes (user_id, node_type, display_name, display_number, commission_rate, status, parent_node_id)
