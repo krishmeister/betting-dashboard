@@ -3,6 +3,7 @@ services:
   - type: web
     name: elev8-php-economy
     env: docker
+    plan: free
     region: ohio # Default US region
     dockerfilePath: ./backend-php-economy/Dockerfile
     envVars:
@@ -13,6 +14,7 @@ services:
   - type: web
     name: elev8-node-realtime
     env: docker
+    plan: free
     region: ohio
     dockerfilePath: ./backend-node-realtime/Dockerfile
     envVars:
