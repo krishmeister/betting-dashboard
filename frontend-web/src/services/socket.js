@@ -1,11 +1,11 @@
 import { io } from 'socket.io-client';
 
-// Hardcoded target to backend-node-realtime server
-const SOCKET_URL = 'http://localhost:3001';
+// Target to live backend-node-realtime server on Render
+const SOCKET_URL = 'https://elev8-node-realtime.onrender.com';
 
 export const socket = io(SOCKET_URL, {
     autoConnect: true,
-    transports: ['websocket', 'polling']
+    transports: ['websocket']
 });
 
 socket.on('connect', () => {

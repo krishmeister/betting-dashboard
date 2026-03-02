@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// The PHP API Endpoints handled locally
-const PHP_URL = 'http://localhost:8080/api/v1/economy';
+// The PHP API Endpoints handled by Render
+const PHP_URL = 'https://elev8-php-economy.onrender.com/api/v1';
 
 export const api = axios.create({
     baseURL: PHP_URL,
