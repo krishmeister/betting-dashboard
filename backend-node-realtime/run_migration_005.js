@@ -2,16 +2,19 @@ import mysql from 'mysql2/promise';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
 
-// Load credentials from .env file
-dotenv.config();
+// Load credentials from .env file in the PHP directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../backend-php-economy/.env') });
 
 const config = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port: parseInt(process.env.DB_PORT || '16036'),
+    host: process.env['database.default.hostname'],
+    user: process.env['database.default.username'],
+    password: process.env['database.default.password'],
+    database: process.env['database.default.database'],
+    port: parseInt(process.env['database.default.port'] || '16036'),
     ssl: { rejectUnauthorized: false },
     multipleStatements: true
 };
@@ -38,7 +41,7 @@ async function run() {
         console.log('Verification:', cols.length > 0 ? '✅ nodes.current_balance column exists' : '❌ Column not found');
 
     } catch (err) {
-        console.error('❌ Migration failed:', err.message);
+        console.error('❌ Migration failed:', err);
     } finally {
         if (connection) await connection.end();
         console.log('Connection closed.');
