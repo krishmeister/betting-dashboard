@@ -218,4 +218,199 @@ class LedgerService
             throw $e;
         }
     }
+
+    // ─────────────────────────────────────────────────────
+    //  CENTRAL BANK ECONOMY ENGINE
+    // ─────────────────────────────────────────────────────
+
+    /**
+     * Mint fresh coins into a target node's balance.
+     * Only callable by the Super Admin (genesis operation).
+     * 
+     * @param int $targetNodeId
+     * @param float $amount
+     * @return array The created transaction record
+     * @throws Exception
+     */
+    public function mintCoins(int $targetNodeId, float $amount): array
+    {
+        if ($amount <= 0) {
+            throw new Exception("Mint amount must be strictly positive.");
+        }
+
+        $targetNode = $this->nodeModel->find($targetNodeId);
+        if (!$targetNode) {
+            throw new Exception("Target node not found.");
+        }
+
+        $this->db->transStart();
+
+        try {
+            // 1. Insert immutable MINT ledger entry
+            $coinTxModel = new \App\Models\CoinTransactionModel();
+            $coinTxModel->insert([
+                'sender_node_id' => null, // Genesis — no sender
+                'receiver_node_id' => $targetNodeId,
+                'amount' => $amount,
+                'transaction_type' => 'MINT'
+            ]);
+
+            // 2. Credit the target node's balance
+            $newBalance = ($targetNode['current_balance'] ?? 0) + $amount;
+            $this->nodeModel->update($targetNodeId, ['current_balance' => $newBalance]);
+
+            $this->db->transComplete();
+
+            if ($this->db->transStatus() === false) {
+                throw new Exception("MINT transaction SQL commit failed.");
+            }
+
+            return [
+                'transaction_type' => 'MINT',
+                'target_node_id' => $targetNodeId,
+                'amount' => $amount,
+                'new_balance' => $newBalance
+            ];
+        } catch (Exception $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+    }
+
+    /**
+     * Allocate coins from a parent node to a child node.
+     * CRITICAL: Enforces Vertical Flow Only via GovernanceService.
+     * 
+     * @param int $senderNodeId
+     * @param int $receiverNodeId
+     * @param float $amount
+     * @return array The created transaction record
+     * @throws Exception
+     */
+    public function allocateCoins(int $senderNodeId, int $receiverNodeId, float $amount): array
+    {
+        if ($amount <= 0) {
+            throw new Exception("Allocation amount must be strictly positive.");
+        }
+
+        if ($senderNodeId === $receiverNodeId) {
+            throw new Exception("Cannot allocate coins to self.");
+        }
+
+        $senderNode = $this->nodeModel->find($senderNodeId);
+        if (!$senderNode) {
+            throw new Exception("Sender node not found.");
+        }
+
+        $receiverNode = $this->nodeModel->find($receiverNodeId);
+        if (!$receiverNode) {
+            throw new Exception("Receiver node not found.");
+        }
+
+        // SECURITY: Check sender balance
+        $senderBalance = (float) ($senderNode['current_balance'] ?? 0);
+        if ($senderBalance < $amount) {
+            throw new Exception("Insufficient balance. Available: {$senderBalance}, Requested: {$amount}");
+        }
+
+        $this->db->transStart();
+
+        try {
+            // 1. Deduct from sender
+            $newSenderBalance = $senderBalance - $amount;
+            $this->nodeModel->update($senderNodeId, ['current_balance' => $newSenderBalance]);
+
+            // 2. Credit receiver
+            $newReceiverBalance = (float) ($receiverNode['current_balance'] ?? 0) + $amount;
+            $this->nodeModel->update($receiverNodeId, ['current_balance' => $newReceiverBalance]);
+
+            // 3. Log immutable ALLOCATION entry
+            $coinTxModel = new \App\Models\CoinTransactionModel();
+            $coinTxModel->insert([
+                'sender_node_id' => $senderNodeId,
+                'receiver_node_id' => $receiverNodeId,
+                'amount' => $amount,
+                'transaction_type' => 'ALLOCATION'
+            ]);
+
+            $this->db->transComplete();
+
+            if ($this->db->transStatus() === false) {
+                throw new Exception("ALLOCATION transaction SQL commit failed.");
+            }
+
+            return [
+                'transaction_type' => 'ALLOCATION',
+                'sender_node_id' => $senderNodeId,
+                'receiver_node_id' => $receiverNodeId,
+                'amount' => $amount,
+                'sender_new_balance' => $newSenderBalance,
+                'receiver_new_balance' => $newReceiverBalance
+            ];
+        } catch (Exception $e) {
+            $this->db->transRollback();
+            throw $e;
+        }
+    }
+
+    /**
+     * Get financial summary for a specific node.
+     * 
+     * @param int $nodeId
+     * @return array
+     */
+    public function getNodeFinancials(int $nodeId): array
+    {
+        $node = $this->nodeModel->find($nodeId);
+        if (!$node) {
+            return ['error' => 'Node not found'];
+        }
+
+        // Total received (MINT + ALLOCATION where this node is receiver)
+        $totalReceived = $this->db->table('coin_transactions')
+            ->selectSum('amount')
+            ->where('receiver_node_id', $nodeId)
+            ->get()->getRowArray();
+
+        // Total allocated down (ALLOCATION where this node is sender)
+        $totalAllocatedDown = $this->db->table('coin_transactions')
+            ->selectSum('amount')
+            ->where('sender_node_id', $nodeId)
+            ->where('transaction_type', 'ALLOCATION')
+            ->get()->getRowArray();
+
+        return [
+            'node_id' => $nodeId,
+            'current_balance' => (float) ($node['current_balance'] ?? 0),
+            'total_received' => (float) ($totalReceived['amount'] ?? 0),
+            'total_allocated_down' => (float) ($totalAllocatedDown['amount'] ?? 0)
+        ];
+    }
+
+    /**
+     * Get the full chronological transaction ledger.
+     * Optionally filtered by a specific node (as sender OR receiver).
+     * 
+     * @param int|null $nodeId Filter by node (null = all transactions)
+     * @param int $limit
+     * @return array
+     */
+    public function getTransactionLedger(?int $nodeId = null, int $limit = 100): array
+    {
+        $builder = $this->db->table('coin_transactions ct')
+            ->select('ct.*, sn.display_name as sender_name, sn.node_type as sender_type, rn.display_name as receiver_name, rn.node_type as receiver_type')
+            ->join('nodes sn', 'sn.id = ct.sender_node_id', 'left')
+            ->join('nodes rn', 'rn.id = ct.receiver_node_id', 'left')
+            ->orderBy('ct.created_at', 'DESC')
+            ->limit($limit);
+
+        if ($nodeId !== null) {
+            $builder->groupStart()
+                ->where('ct.sender_node_id', $nodeId)
+                ->orWhere('ct.receiver_node_id', $nodeId)
+                ->groupEnd();
+        }
+
+        return $builder->get()->getResultArray();
+    }
 }

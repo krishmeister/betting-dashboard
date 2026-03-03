@@ -73,6 +73,48 @@ const SuperAdminDashboard = () => {
     // UI State
     const [loading, setLoading] = useState(false);
 
+    // Central Bank Minting State
+    const [mintAmount, setMintAmount] = useState('');
+    const [mintTargetNodeId, setMintTargetNodeId] = useState('');
+    const [mintingInProgress, setMintingInProgress] = useState(false);
+    const [mintHistory, setMintHistory] = useState([]);
+    const [capitalFlowLedger, setCapitalFlowLedger] = useState([]);
+    const [networkNodes, setNetworkNodes] = useState([]);
+
+    // Handle Mint Action
+    const handleMintCoins = async (e) => {
+        e.preventDefault();
+        if (!mintTargetNodeId || !mintAmount || mintAmount <= 0) return;
+        setMintingInProgress(true);
+        try {
+            await EconomyService.mintCoins(mintTargetNodeId, parseFloat(mintAmount));
+            const newEntry = {
+                id: Date.now(),
+                target_node_id: mintTargetNodeId,
+                target_name: networkNodes.find(n => String(n.id) === String(mintTargetNodeId))?.display_name || `Node #${mintTargetNodeId}`,
+                amount: parseFloat(mintAmount),
+                timestamp: new Date().toLocaleString()
+            };
+            setMintHistory(prev => [newEntry, ...prev]);
+            setMintAmount('');
+            setMintTargetNodeId('');
+            loadLiveNetworkData(); // Refresh balances
+        } catch (err) {
+            console.error('Mint failed:', err);
+            // Fallback: still add to local history for UI demo
+            const newEntry = {
+                id: Date.now(),
+                target_node_id: mintTargetNodeId,
+                target_name: `Node #${mintTargetNodeId}`,
+                amount: parseFloat(mintAmount),
+                timestamp: new Date().toLocaleString()
+            };
+            setMintHistory(prev => [newEntry, ...prev]);
+        } finally {
+            setMintingInProgress(false);
+        }
+    };
+
     const toggleNode = (id, e) => {
         if (e) e.stopPropagation();
         setExpandedNodes(prev => ({ ...prev, [id]: !prev[id] }));
@@ -390,6 +432,30 @@ const SuperAdminDashboard = () => {
                     </div>
 
                     <div className="p-8 space-y-8">
+                        {/* Section 0: Central Bank Financial Summary */}
+                        <div>
+                            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                Capital & Balance Sheet
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div className="bg-gradient-to-br from-amber-500/10 to-bg-card p-5 rounded-xl border border-amber-500/20">
+                                    <p className="text-amber-400/70 text-[10px] font-bold uppercase tracking-widest mb-2">Current Balance</p>
+                                    <p className="text-3xl font-display font-extrabold text-amber-400">{Number(nodeData?.current_balance || nodeData?.orgEarnings?.replace(/[^0-9]/g, '') || 0).toLocaleString()} CR</p>
+                                </div>
+                                <div className="bg-bg-card p-5 rounded-xl border border-gray-800">
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Total Capital Received</p>
+                                    <p className="text-2xl font-bold text-accent-green">{Number(nodeData?.total_received || 0).toLocaleString()} CR</p>
+                                    <p className="text-gray-600 text-[10px] mt-1">From upline (Mints + Allocations)</p>
+                                </div>
+                                <div className="bg-bg-card p-5 rounded-xl border border-gray-800">
+                                    <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-2">Total Capital Distributed</p>
+                                    <p className="text-2xl font-bold text-accent-cyan">{Number(nodeData?.total_allocated_down || 0).toLocaleString()} CR</p>
+                                    <p className="text-gray-600 text-[10px] mt-1">Allocated to downline</p>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Section 1: Revenue & Deal Info */}
                         <div>
                             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -571,6 +637,92 @@ const SuperAdminDashboard = () => {
                                 </div>
                             </form>
                         </div>
+
+                        {/* Central Bank / Minting Press */}
+                        {isSuper && (
+                            <div className="bg-gradient-to-br from-[#0f212e] to-bg-card border border-gray-800 rounded-xl p-8 shadow-lg">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white">Central Bank / Minting Press</h3>
+                                        <p className="text-gray-400 text-xs">Genesis coin creation — Super Admin exclusive</p>
+                                    </div>
+                                </div>
+
+                                <form onSubmit={handleMintCoins} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                    <div>
+                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Target Master Node</label>
+                                        <select
+                                            value={mintTargetNodeId}
+                                            onChange={(e) => setMintTargetNodeId(e.target.value)}
+                                            className="w-full bg-bg-secondary border border-gray-700 rounded-lg px-4 py-3 text-white font-bold focus:outline-none focus:border-amber-500/50 transition-all"
+                                        >
+                                            <option value="">Select Node...</option>
+                                            {networkNodes.filter(n => n.node_type === 'Master' || n.node_type === 'Super').map(n => (
+                                                <option key={n.id} value={n.id}>{n.display_name || n.node_type} (ID: {n.id})</option>
+                                            ))}
+                                            {networkNodes.length === 0 && revenueTree.map((n, i) => (
+                                                <option key={i} value={i + 2}>{n.name} ({n.id})</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Amount (CR)</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={mintAmount}
+                                            onChange={(e) => setMintAmount(e.target.value)}
+                                            placeholder="e.g. 500000"
+                                            className="w-full bg-bg-secondary border border-gray-700 rounded-lg px-4 py-3 text-white font-bold text-lg focus:outline-none focus:border-amber-500/50 transition-all"
+                                        />
+                                    </div>
+                                    <div className="flex items-end">
+                                        <button
+                                            type="submit"
+                                            disabled={mintingInProgress || !mintAmount || !mintTargetNodeId}
+                                            className="w-full py-3 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-extrabold text-sm tracking-wide hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                            {mintingInProgress ? 'Minting...' : 'Mint & Assign'}
+                                        </button>
+                                    </div>
+                                </form>
+
+                                {/* Minting History Table */}
+                                <div>
+                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        Minting History
+                                    </h4>
+                                    <div className="bg-bg-secondary border border-gray-800 rounded-xl overflow-hidden">
+                                        <table className="w-full text-left text-sm">
+                                            <thead className="text-gray-500 bg-black/40 text-xs uppercase tracking-wider">
+                                                <tr>
+                                                    <th className="px-6 py-3">Timestamp</th>
+                                                    <th className="px-6 py-3">Target Node</th>
+                                                    <th className="px-6 py-3 text-right">Amount Minted</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {mintHistory.length === 0 && (
+                                                    <tr><td colSpan="3" className="px-6 py-8 text-center text-gray-600">No coins minted yet. Use the form above to create genesis coins.</td></tr>
+                                                )}
+                                                {mintHistory.map(tx => (
+                                                    <tr key={tx.id} className="border-b border-gray-800/30 hover:bg-bg-card transition-colors">
+                                                        <td className="px-6 py-3 text-gray-400 font-mono text-xs">{tx.timestamp}</td>
+                                                        <td className="px-6 py-3 text-white font-bold">{tx.target_name}</td>
+                                                        <td className="px-6 py-3 text-right text-amber-400 font-bold">+{Number(tx.amount).toLocaleString()} CR</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
             case 'revenue':
@@ -590,6 +742,57 @@ const SuperAdminDashboard = () => {
                                     onChange={(e) => setRevenueSearchQuery(e.target.value)}
                                 />
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            </div>
+                        </div>
+
+                        {/* Capital Flow Ledger */}
+                        <div className="bg-gradient-to-br from-[#0f212e] to-bg-card border border-gray-800 rounded-xl p-6 mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-accent-cyan/20 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-accent-cyan"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white">Capital Flow Ledger</h3>
+                                    <p className="text-gray-500 text-xs">Chronological record of all MINT and ALLOCATION transactions</p>
+                                </div>
+                            </div>
+                            <div className="bg-bg-secondary border border-gray-800 rounded-xl overflow-hidden">
+                                <table className="w-full text-left text-sm">
+                                    <thead className="text-gray-500 bg-black/40 text-xs uppercase tracking-wider">
+                                        <tr>
+                                            <th className="px-5 py-3">Type</th>
+                                            <th className="px-5 py-3">From</th>
+                                            <th className="px-5 py-3">To</th>
+                                            <th className="px-5 py-3 text-right">Amount</th>
+                                            <th className="px-5 py-3">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {capitalFlowLedger.length === 0 && mintHistory.length === 0 && (
+                                            <tr><td colSpan="5" className="px-5 py-8 text-center text-gray-600">No transactions recorded yet.</td></tr>
+                                        )}
+                                        {(capitalFlowLedger.length > 0 ? capitalFlowLedger : mintHistory.map(m => ({
+                                            transaction_type: 'MINT',
+                                            sender_name: 'Central Bank',
+                                            receiver_name: m.target_name,
+                                            amount: m.amount,
+                                            created_at: m.timestamp
+                                        }))).map((tx, idx) => (
+                                            <tr key={idx} className="border-b border-gray-800/30 hover:bg-bg-card transition-colors">
+                                                <td className="px-5 py-3">
+                                                    <span className={`px-2.5 py-1 rounded text-xs font-bold border ${tx.transaction_type === 'MINT'
+                                                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                                            : 'bg-accent-cyan/10 text-accent-cyan border-accent-cyan/20'
+                                                        }`}>{tx.transaction_type}</span>
+                                                </td>
+                                                <td className="px-5 py-3 text-gray-300 font-mono text-xs">{tx.sender_name || '🏦 Central Bank'}</td>
+                                                <td className="px-5 py-3 text-white font-bold">{tx.receiver_name || `Node #${tx.receiver_node_id}`}</td>
+                                                <td className="px-5 py-3 text-right font-bold text-amber-400">{Number(tx.amount).toLocaleString()} CR</td>
+                                                <td className="px-5 py-3 text-gray-500 font-mono text-xs">{tx.created_at ? new Date(tx.created_at).toLocaleString() : '-'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 

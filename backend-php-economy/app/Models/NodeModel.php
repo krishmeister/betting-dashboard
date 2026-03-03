@@ -20,6 +20,7 @@ class NodeModel extends Model
         'display_number',
         'location',
         'commission_rate',
+        'current_balance',
         'status',
         'parent_node_id'
     ];

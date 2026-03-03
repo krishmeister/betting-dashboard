@@ -20,26 +20,26 @@ class EconomyController extends ResourceController
     }
 
     /**
-     * Mint endpoint
+     * Mint endpoint (Central Bank)
      * POST /api/v1/economy/mint
+     * Super Admin mints fresh coins to a target Master node.
      */
     public function mint()
     {
+        $targetNodeId = $this->request->getVar('target_node_id');
         $amount = $this->request->getVar('amount');
-        $superAdminWalletId = $this->request->getVar('super_admin_wallet_id');
 
-        if (empty($amount) || empty($superAdminWalletId)) {
-            return $this->failValidationError('Required nodes: amount, super_admin_wallet_id.');
+        if (empty($targetNodeId) || empty($amount)) {
+            return $this->failValidationError('Required: target_node_id, amount.');
         }
 
         try {
-            // Null sender acts as Genesis block mint
-            $this->ledgerService->transferCredits(null, $superAdminWalletId, $amount, 'deposit');
+            $result = $this->ledgerService->mintCoins((int) $targetNodeId, (float) $amount);
 
             return $this->respondCreated([
                 'status' => 'success',
-                'message' => 'Credits minted successfully initialized.',
-                'minted_amount' => $amount
+                'message' => 'Coins minted and assigned successfully.',
+                'data' => $result
             ]);
         } catch (Exception $e) {
             return $this->failServerError($e->getMessage());
@@ -47,7 +47,45 @@ class EconomyController extends ResourceController
     }
 
     /**
-     * Transfer endpoint
+     * Allocate endpoint (Vertical Flow Only)
+     * POST /api/v1/economy/allocate
+     * A parent node sends coins down to a child node.
+     */
+    public function allocate()
+    {
+        $senderNodeId = $this->request->getVar('sender_node_id');
+        $receiverNodeId = $this->request->getVar('receiver_node_id');
+        $amount = $this->request->getVar('amount');
+
+        if (empty($senderNodeId) || empty($receiverNodeId) || empty($amount)) {
+            return $this->failValidationError('Required: sender_node_id, receiver_node_id, amount.');
+        }
+
+        // CRITICAL SECURITY: Verify Vertical Flow Only
+        $governanceService = new GovernanceService();
+        if (!$governanceService->canAdministerNode((int) $senderNodeId, (int) $receiverNodeId)) {
+            return $this->failForbidden('VERTICAL FLOW VIOLATION: Sender must be a direct ancestor of receiver. Cross-branch or same-level transfers are prohibited.');
+        }
+
+        try {
+            $result = $this->ledgerService->allocateCoins(
+                (int) $senderNodeId,
+                (int) $receiverNodeId,
+                (float) $amount
+            );
+
+            return $this->respond([
+                'status' => 'success',
+                'message' => 'Coins allocated successfully through hierarchy.',
+                'data' => $result
+            ]);
+        } catch (Exception $e) {
+            return $this->failServerError($e->getMessage());
+        }
+    }
+
+    /**
+     * Transfer endpoint (legacy wallet-to-wallet)
      * POST /api/v1/economy/transfer
      */
     public function transfer()
@@ -67,6 +105,58 @@ class EconomyController extends ResourceController
                 'status' => 'success',
                 'message' => 'Transfer pushed through hierarchy successfully.',
                 'transfer_amount' => $amount
+            ]);
+        } catch (Exception $e) {
+            return $this->failServerError($e->getMessage());
+        }
+    }
+
+    /**
+     * Network Status endpoint
+     * GET /api/v1/economy/network_status
+     * Returns node balances, financials, and the transaction ledger.
+     */
+    public function networkStatus()
+    {
+        $nodeId = $this->request->getGet('node_id');
+
+        try {
+            $nodeModel = new \App\Models\NodeModel();
+
+            // Get all nodes with their balances
+            $nodes = $nodeModel->findAll();
+            $nodesWithFinancials = [];
+
+            foreach ($nodes as $node) {
+                $financials = $this->ledgerService->getNodeFinancials((int) $node['id']);
+                $nodesWithFinancials[] = array_merge($node, $financials);
+            }
+
+            // Get the transaction ledger
+            $ledger = $this->ledgerService->getTransactionLedger(
+                $nodeId ? (int) $nodeId : null
+            );
+
+            // Build system metrics
+            $totalMinted = array_reduce($ledger, function ($carry, $tx) {
+                return $carry + ($tx['transaction_type'] === 'MINT' ? (float) $tx['amount'] : 0);
+            }, 0);
+
+            $totalAllocated = array_reduce($ledger, function ($carry, $tx) {
+                return $carry + ($tx['transaction_type'] === 'ALLOCATION' ? (float) $tx['amount'] : 0);
+            }, 0);
+
+            return $this->respond([
+                'status' => 'success',
+                'data' => [
+                    'metrics' => [
+                        'total_nodes' => count($nodes),
+                        'total_minted' => $totalMinted,
+                        'total_allocated' => $totalAllocated
+                    ],
+                    'nodes' => $nodesWithFinancials,
+                    'ledger' => $ledger
+                ]
             ]);
         } catch (Exception $e) {
             return $this->failServerError($e->getMessage());
@@ -111,9 +201,7 @@ class EconomyController extends ResourceController
      */
     public function settleMatch()
     {
-        // Require Internal Service API Key (Server bridging)
         $authHeader = $this->request->getHeaderLine('Authorization');
-        // Basic static bearer check: "Bearer development_internal_key"
         if ($authHeader !== 'Bearer development_internal_key') {
             return $this->failUnauthorized('Invalid SERVICE_API_KEY internal backend token provided.');
         }
@@ -162,14 +250,12 @@ class EconomyController extends ResourceController
             return $this->failValidationError('Required nodes: admin_node_id, target_node_id, target_wallet_id, amount.');
         }
 
-        // Verify Governance Hierarchy
         $governanceService = new GovernanceService();
         if (!$governanceService->canAdministerNode($adminNodeId, $targetNodeId)) {
             return $this->failForbidden('Authorization failed. Admin node is not directly above the target node in the hierarchy chain.');
         }
 
         try {
-            // Null sender implies we are injecting credits the admin paid for in fiat to the sub-node
             $this->ledgerService->transferCredits(null, $targetWalletId, $amount, 'MANUAL_FIAT');
 
             return $this->respond([
@@ -182,3 +268,4 @@ class EconomyController extends ResourceController
         }
     }
 }
+

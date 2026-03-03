@@ -11,10 +11,32 @@ export const api = axios.create({
 });
 
 export const EconomyService = {
-    // Mint operation pushing funds arbitrarily to a wallet (Admin)
+    // Central Bank: Mint fresh coins to a target Master node (Super Admin only)
+    mintCoins: async (targetNodeId, amount) => {
+        try {
+            const response = await api.post('/economy/mint', { target_node_id: targetNodeId, amount });
+            return response.data;
+        } catch (error) {
+            console.error('API Error minting coins:', error.response?.data || error.message);
+            throw error;
+        }
+    },
+
+    // Allocate coins from parent node to child node (Vertical Flow Only)
+    allocateCoins: async (senderNodeId, receiverNodeId, amount) => {
+        try {
+            const response = await api.post('/economy/allocate', { sender_node_id: senderNodeId, receiver_node_id: receiverNodeId, amount });
+            return response.data;
+        } catch (error) {
+            console.error('API Error allocating coins:', error.response?.data || error.message);
+            throw error;
+        }
+    },
+
+    // Legacy: Mint operation pushing funds to a wallet
     mintCredits: async (amount, superAdminWalletId) => {
         try {
-            const response = await api.post('/mint', { amount, super_admin_wallet_id: superAdminWalletId });
+            const response = await api.post('/economy/mint', { amount, super_admin_wallet_id: superAdminWalletId });
             return response.data;
         } catch (error) {
             console.error('API Error minting credits:', error.response?.data || error.message);
@@ -25,7 +47,7 @@ export const EconomyService = {
     // Standard platform tier transfer
     transferCredits: async (senderId, receiverId, amount) => {
         try {
-            const response = await api.post('/transfer', { sender_id: senderId, receiver_id: receiverId, amount });
+            const response = await api.post('/economy/transfer', { sender_id: senderId, receiver_id: receiverId, amount });
             return response.data;
         } catch (error) {
             console.error('API Error transferring credits:', error.response?.data || error.message);
@@ -36,7 +58,7 @@ export const EconomyService = {
     // Get current usable balance snapshot
     getBalance: async (walletId) => {
         try {
-            const response = await api.get(`/balance/${walletId}`);
+            const response = await api.get(`/economy/balance/${walletId}`);
             return response.data.data;
         } catch (error) {
             console.error('API Error fetching balance:', error.response?.data || error.message);
@@ -44,12 +66,10 @@ export const EconomyService = {
         }
     },
 
-    // Fetch the live network topology and analytics for the Command Center
+    // Fetch the live network topology, financials, and transaction ledger
     fetchNetworkData: async (nodeId) => {
         try {
-            // Note: Replace with actual GET /network_status endpoint when built on PHP side
-            const response = await api.get(`/network_status?node_id=${nodeId}`);
-            // Returning the expected payload structure to replace current mocked states
+            const response = await api.get(`/economy/network_status${nodeId ? `?node_id=${nodeId}` : ''}`);
             return response.data;
         } catch (error) {
             console.error('API Error fetching network data:', error.response?.data || error.message);

@@ -10,8 +10,10 @@ $routes->get('/', 'Home::index');
 $routes->group('api/v1', function ($routes) {
     // Multi-tier economy routing logic block
     $routes->post('economy/mint', 'EconomyController::mint');
+    $routes->post('economy/allocate', 'EconomyController::allocate');
     $routes->post('economy/transfer', 'EconomyController::transfer');
     $routes->get('economy/balance/(:num)', 'EconomyController::balance/$1');
+    $routes->get('economy/network_status', 'EconomyController::networkStatus');
     $routes->post('economy/settle_match', 'EconomyController::settleMatch');
     $routes->post('economy/manual_fiat_settlement', 'EconomyController::manualFiatSettlement');
 
